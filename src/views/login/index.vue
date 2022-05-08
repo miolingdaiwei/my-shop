@@ -48,7 +48,6 @@
           <el-checkbox v-model="checked" @change="!checked"
             >下次自动登录</el-checkbox
           >
-          <el-link href="/cellLogin">手机号登录</el-link>
         </el-form-item>
       </el-form>
     </div>
@@ -92,6 +91,7 @@ const submitForm = () => {
   loading.value = true;
   checkLogin().then((res) => {
     for (let item of res.data.user) {
+      console.log(res);
       if (
         item.username == ruleFrom.username &&
         item.password == ruleFrom.password
@@ -100,6 +100,7 @@ const submitForm = () => {
         if (checked.value) {
           localStorage.setItem("autologin", ruleFrom.username);
         }
+        console.log("push问题");
         router.push({
           path: "/",
           query: {

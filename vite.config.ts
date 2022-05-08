@@ -16,7 +16,6 @@ export default defineConfig({
     proxy: {
       "/api": {
         // api开头的走代理
-        // 代理到4000
         target:
           " https://mock.mengxuegu.com/mock/626187810a65bd50bbd93ddf/example",
         changeOrigin: true,
@@ -24,6 +23,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
+    host: "0.0.0.0",
   },
   css: {
     preprocessorOptions: {
