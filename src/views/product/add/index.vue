@@ -65,13 +65,15 @@
 import { ref, reactive } from "vue";
 import type { FormItemRule } from "element-plus";
 import { ElForm } from "element-plus";
-
+// import { useRoute } from "vue-router";
+// import type { Glist } from "@/types/good/good";
 // inxtanceTyoe  获取类型接口  联合类型
 const loginForm = ref<InstanceType<typeof ElForm> | null>(null);
 // 自动获取
 
+// const route = useRoute();
 let radio = ref("1");
-
+// let goods = ref<Glist>();
 const loading = ref(false);
 
 const rules = ref<Record<string, FormItemRule[]>>({

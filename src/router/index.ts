@@ -48,8 +48,18 @@ const router = createRouter({
 });
 
 // 全局前置守卫
-router.beforeEach(() => {
+router.beforeEach((to, from, next) => {
   nprogress.start();
+  if (to.path == "/login") next();
+  else {
+    if (!localStorage.getItem("token"))
+      next({
+        path: "/login",
+      });
+    else {
+      next();
+    }
+  }
 });
 // 全局后置守卫
 router.afterEach(() => nprogress.done());

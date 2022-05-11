@@ -56,10 +56,11 @@
 
 <script setup lang="ts">
 import router from "@/router/index";
-import { ref, reactive, onMounted } from "vue";
-import { ElMessage, type FormItemRule } from "element-plus";
+import { ref, reactive } from "vue";
+import type { FormItemRule } from "element-plus";
 import { ElForm } from "element-plus";
-import { checkLogin } from "@/api/sendCheckCode";
+import { adminLogin } from "@/untils/api";
+import { Md5 } from "ts-md5";
 
 // inxtanceTyoe  获取类型接口  联合类型
 const loginForm = ref<InstanceType<typeof ElForm> | null>(null);
@@ -88,43 +89,28 @@ let ruleFrom = reactive<rulefrom>({
 });
 
 const submitForm = () => {
-  loading.value = true;
-  checkLogin().then((res) => {
-    for (let item of res.data.user) {
-      console.log(res);
-      if (
-        item.username == ruleFrom.username &&
-        item.password == ruleFrom.password
-      ) {
-        ElMessage("登录成功");
+  loginForm.value?.validate((vaild) => {
+    if (vaild) {
+      loading.value = true;
+      adminLogin({
+        userName: ruleFrom.username,
+        passwordMd5: Md5.hashStr(String(ruleFrom.password)),
+      }).then((res) => {
+        console.log(res);
         if (checked.value) {
-          localStorage.setItem("autologin", ruleFrom.username);
+          localStorage.setItem("token", res);
         }
-        console.log("push问题");
+        loading.value = false;
         router.push({
           path: "/",
           query: {
             username: ruleFrom.username,
           },
         });
-        return;
-      } else {
-        ElMessage("账号或密码错误");
-      }
+      });
     }
   });
-  loading.value = false;
 };
-onMounted(() => {
-  if (localStorage.getItem("autologin")) {
-    router.push({
-      path: "/",
-      query: {
-        username: localStorage.getItem("autologin"),
-      },
-    });
-  }
-});
 </script>
 
 <style lang="scss" scoped>

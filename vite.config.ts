@@ -16,8 +16,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         // api开头的走代理
-        target:
-          " https://mock.mengxuegu.com/mock/626187810a65bd50bbd93ddf/example",
+        target: "http://backend-api-02.newbee.ltd/manage-api/v1",
         changeOrigin: true,
         // 确认换源  api换成“”
         rewrite: (path) => path.replace(/^\/api/, ""),
