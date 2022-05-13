@@ -96,7 +96,7 @@ const getGood = () => {
     pageNumber: state.currPage,
     pageSize: state.pageSize,
   }).then((res) => {
-    console.log(res);
+    console.log(res, 2);
     state.currPage = res.currPage;
     state.list = res.list;
     state.pageSize = res.pageSize;
@@ -113,7 +113,7 @@ const addProduct = () => {
 };
 
 const handleEdit = (id: number) => {
-  router.push({ path: "/product/product_add", params: { goodsId: id } });
+  router.push({ path: "/product/product_add", query: { id } });
 };
 // 选择项
 const handleSelectionChange = (val: Glist[]) => {
@@ -132,8 +132,7 @@ const handleStatus = (status: number, id?: number) => {
       ids: id ? [id] : [],
     },
     status,
-  }).then((res) => {
-    console.log(res);
+  }).then(() => {
     ElMessage.success("修改成功");
   });
   getGood();

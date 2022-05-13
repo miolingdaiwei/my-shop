@@ -1,24 +1,21 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import type { CommonRes } from "@/types/common";
+import { localGet } from "@/untils/common";
 
 const request = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_APP_BASE_URL + "",
 });
-// request.defaults.withCredentials = true;
-// request.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
-request.defaults.headers.common["token"] = localStorage.getItem("token") || "";
-// request.defaults.headers.post["Content-Type"] = "application/json";
+request.defaults.withCredentials = true;
+request.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+request.defaults.headers.common["token"] = localGet("token") || "";
+request.defaults.headers.post["Content-Type"] = "application/json";
 
-// request.interceptors.response.use((res) => {
-//   if (res.data.code !== 200) {
-//     ElMessage("发生了错误");
-//     return ;
-//   }
-//   return res;
-// });
+request.interceptors.request.use((req) => {
+  console.log(import.meta.env.VITE_APP_BASE_URL);
+  return req;
+});
 
 request.interceptors.response.use((res) => {
-  console.log(res);
   return res.data as CommonRes;
 });
 

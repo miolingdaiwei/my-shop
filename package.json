@@ -2,8 +2,8 @@
   "name": "my-shop",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "dev": "vite --mode development",
+    "build": "vue-tsc --noEmit && vite build --mode production",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
@@ -16,7 +16,8 @@
     "sass": "^1.50.1",
     "ts-md5": "^1.2.11",
     "vue": "^3.2.33",
-    "vue-router": "^4.0.14"
+    "vue-router": "^4.0.14",
+    "wangeditor": "^4.7.15"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.4",

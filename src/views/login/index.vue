@@ -61,6 +61,7 @@ import type { FormItemRule } from "element-plus";
 import { ElForm } from "element-plus";
 import { adminLogin } from "@/untils/api";
 import { Md5 } from "ts-md5";
+import { localSet } from "@/untils/common";
 
 // inxtanceTyoe  获取类型接口  联合类型
 const loginForm = ref<InstanceType<typeof ElForm> | null>(null);
@@ -95,10 +96,10 @@ const submitForm = () => {
       adminLogin({
         userName: ruleFrom.username,
         passwordMd5: Md5.hashStr(String(ruleFrom.password)),
+        // 这是ts-md5的文档写法
       }).then((res) => {
-        console.log(res);
         if (checked.value) {
-          localStorage.setItem("token", res);
+          localSet("token", res);
         }
         loading.value = false;
         router.push({

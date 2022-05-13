@@ -4,22 +4,22 @@ export interface GoodReq {
 }
 
 export interface Glist {
-  createTime?: string;
-  createUser?: number;
-  goodsCarousel?: string;
-  goodsCategoryId?: number;
-  goodsCoverImg?: string;
-  goodsDetailContent?: null | string | object;
-  goodsId?: number;
-  goodsIntro?: string;
-  goodsName?: string;
-  goodsSellStatus?: number;
-  originalPrice?: number;
-  sellingPrice?: number;
-  stockNum?: number;
-  tag?: string;
-  updateTime?: string;
-  updateUser?: number;
+  createTime: string;
+  createUser: number;
+  goodsCarousel: string;
+  goodsCategoryId: number;
+  goodsCoverImg: string;
+  goodsDetailContent: string;
+  goodsId: number;
+  goodsIntro: string;
+  goodsName: string;
+  goodsSellStatus: number;
+  originalPrice: number;
+  sellingPrice: number;
+  stockNum: number;
+  tag: string;
+  updateTime: string;
+  updateUser: number;
 }
 
 export interface GoodList {
@@ -36,4 +36,38 @@ export interface CStatus {
     ids: [] | [any];
   };
   status: number;
+}
+
+export interface GoodCategory {
+  categoryId: number;
+  categoryLevel: number;
+  categoryName: string;
+  categoryRank: number;
+  createTime: string;
+  createUser: number;
+  isDeleted: number;
+  parentId: number;
+  updateTime: string;
+  updateUser: number;
+}
+
+export interface OneGood {
+  firstCategory: GoodCategory;
+  goods: Glist;
+  secondCategory: GoodCategory;
+  thirdCategory: GoodCategory;
+}
+
+export interface AddGood {
+  goodsCategoryId: number;
+  goodsCoverImg: string;
+  goodsDetailContent: string;
+  goodsIntro: string;
+  goodsName: string;
+  goodsSellStatus: number;
+  originalPrice: number;
+  sellingPrice: number;
+  stockNum: number;
+  tag: string;
+  goodsId?: string;
 }
