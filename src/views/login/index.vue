@@ -24,6 +24,7 @@
             type="text"
             autocomplete="off"
             v-model.trim="ruleFrom.username"
+            :placeholder="store.username"
           ></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -56,12 +57,15 @@
 
 <script setup lang="ts">
 import router from "@/router/index";
+import { useUsernameStore } from "@/stores/common/common";
 import { ref, reactive } from "vue";
 import type { FormItemRule } from "element-plus";
 import { ElForm } from "element-plus";
-import { adminLogin } from "@/untils/api";
+import { adminLogin } from "@/untils/api/commonApi";
 import { Md5 } from "ts-md5";
 import { localSet } from "@/untils/common";
+
+const store = useUsernameStore();
 
 // inxtanceTyoe  获取类型接口  联合类型
 const loginForm = ref<InstanceType<typeof ElForm> | null>(null);
@@ -79,13 +83,13 @@ const rules = ref<Record<string, FormItemRule[]>>({
 
 type rulefrom = {
   username: string;
-  password: number;
+  password: string;
   checkCode: string;
 };
 
 let ruleFrom = reactive<rulefrom>({
   username: "",
-  password: 0,
+  password: "",
   checkCode: "",
 });
 
@@ -95,18 +99,16 @@ const submitForm = () => {
       loading.value = true;
       adminLogin({
         userName: ruleFrom.username,
-        passwordMd5: Md5.hashStr(String(ruleFrom.password)),
+        passwordMd5: Md5.hashStr(ruleFrom.password),
         // 这是ts-md5的文档写法
       }).then((res) => {
         if (checked.value) {
           localSet("token", res);
+          store.setUsername(ruleFrom.username);
         }
         loading.value = false;
         router.push({
           path: "/",
-          query: {
-            username: ruleFrom.username,
-          },
         });
       });
     }

@@ -3,14 +3,7 @@
   <el-button type="primary" class="el-btn" @click="addProduct"
     >添加商品</el-button
   >
-  <el-table
-    v-loading="loading"
-    ref="multipleTableRef"
-    :data="state.list"
-    style="width: 100%"
-    @selection-change="handleSelectionChange"
-  >
-    <el-table-column type="selection" width="55"> </el-table-column>
+  <el-table v-loading="loading" :data="store.list" style="width: 100%">
     <el-table-column prop="goodsId" label="商品编号"> </el-table-column>
     <el-table-column prop="goodsName" label="商品名"> </el-table-column>
     <el-table-column prop="goodsIntro" label="商品简介"> </el-table-column>
@@ -61,47 +54,28 @@
     class="elpage"
     background
     layout="prev, pager, next"
-    v-model:total="state.totalPage"
-    v-model:page-size="state.pageSize"
-    v-model:current-page="state.currPage"
-    @current-change="changePage"
+    v-model:total="store.totalPage"
+    v-model:page-size="store.pageSize"
+    v-model:current-page="store.currPage"
+    @current-change="store.changePage"
   />
 </template>
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { onMounted, reactive, ref } from "vue";
+import { useProductStore } from "@/stores/product/product";
+import { onMounted, ref } from "vue";
 import { ElMessage, type ElTable } from "element-plus";
-import { changeStatus, getGoodList } from "@/untils/api";
-import type { Glist, GoodList } from "@/types/good/good";
+import { changeStatus } from "@/untils/api/productApi";
+
+const store = useProductStore();
+const router = useRouter();
 
 let loading = ref(false);
-const router = useRouter();
-const multipleTableRef = ref<InstanceType<typeof ElTable>>();
-const multipleSelection = ref<Glist[]>([]);
 
-// 这是我这个页面的一个仓库
-let state = reactive<GoodList>({
-  list: [] as Glist[], // 数据列表
-  totalCount: 0, // 总条数
-  currPage: 1, // 当前页
-  pageSize: 10, // 分页大小
-  totalPage: 1,
-});
-
-// 这个页面的拉取
 const getGood = () => {
   loading.value = true;
-  getGoodList({
-    pageNumber: state.currPage,
-    pageSize: state.pageSize,
-  }).then((res) => {
-    console.log(res, 2);
-    state.currPage = res.currPage;
-    state.list = res.list;
-    state.pageSize = res.pageSize;
-    state.totalCount = res.totalCount;
-    state.totalPage = res.totalPage;
+  store.getterGood().then(() => {
     loading.value = false;
   });
 };
@@ -115,16 +89,6 @@ const addProduct = () => {
 const handleEdit = (id: number) => {
   router.push({ path: "/product/product_add", query: { id } });
 };
-// 选择项
-const handleSelectionChange = (val: Glist[]) => {
-  multipleSelection.value = val;
-};
-
-// 跳页
-const changePage = (val: number) => {
-  state.currPage = val;
-  getGood();
-};
 
 const handleStatus = (status: number, id?: number) => {
   changeStatus({
@@ -134,12 +98,12 @@ const handleStatus = (status: number, id?: number) => {
     status,
   }).then(() => {
     ElMessage.success("修改成功");
+    getGood();
   });
-  getGood();
 };
 
 onMounted(() => {
-  getGood();
+  store.getterGood();
 });
 </script>
 

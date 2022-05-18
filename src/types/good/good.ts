@@ -10,7 +10,7 @@ export interface Glist {
   goodsCategoryId: number;
   goodsCoverImg: string;
   goodsDetailContent: string;
-  goodsId: number;
+  goodsId: string;
   goodsIntro: string;
   goodsName: string;
   goodsSellStatus: number;

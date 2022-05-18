@@ -1,13 +1,21 @@
 <template>
   <div class="login-body">
     <div class="login-container">
-      <el-form label-position="top" ref="ruleForm" :rules="rules" :model="good">
-        <el-form-item required label="商品分类">
+      <el-button type="primary" class="el-btn" @click="toProduct" v-show="id"
+        >返回商品列表</el-button
+      >
+      <el-form
+        label-position="top"
+        ref="ruleForm"
+        :rules="rules"
+        :model="goods"
+      >
+        <el-form-item label="商品分类">
           <el-cascader
             style="width: 300px"
-            :placeholder="defaultCate"
+            :placeholder="store.getCode"
             :props="category"
-            @change="handleChangeCate"
+            @change="store.handleChangeCate"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="商品名" prop="goodsName">
@@ -15,7 +23,7 @@
             type="text"
             style="width: 400px"
             maxlength="10"
-            v-model="good.goodsName"
+            v-model="goods.goodsName"
             show-word-limit
           ></el-input>
         </el-form-item>
@@ -23,7 +31,7 @@
           <el-input
             type="textarea"
             style="width: 400px"
-            v-model="good.goodsIntro"
+            v-model="goods.goodsIntro"
             maxlength="30"
             placeholder="请输入商品简介"
             show-word-limit
@@ -31,7 +39,7 @@
         </el-form-item>
         <el-form-item label="商品原价" prop="originalPrice">
           <el-input-number
-            v-model="good.originalPrice"
+            v-model="goods.originalPrice"
             style="width: 400px"
             :min="1"
             :max="1000"
@@ -39,7 +47,7 @@
         </el-form-item>
         <el-form-item label="库存" prop="stockNum">
           <el-input-number
-            v-model="good.stockNum"
+            v-model="goods.stockNum"
             style="width: 400px"
             :min="1"
             :max="1000"
@@ -47,7 +55,7 @@
         </el-form-item>
         <el-form-item label="商品售价" prop="sellingPrice">
           <el-input-number
-            v-model="good.sellingPrice"
+            v-model="goods.sellingPrice"
             style="width: 400px"
             :min="1"
             :max="1000"
@@ -56,7 +64,7 @@
 
         <el-form-item label="商品标签" prop="tag">
           <el-input
-            v-model="good.tag"
+            v-model="goods.tag"
             style="width: 300px"
             placeholder="请输入商品小标签"
             maxlength="10"
@@ -65,7 +73,7 @@
         </el-form-item>
 
         <el-form-item label="商品状态" prop="goodsSellStatus">
-          <el-radio-group v-model="good.goodsSellStatus">
+          <el-radio-group v-model="goods.goodsSellStatus">
             <el-radio :label="0">上架</el-radio>
             <el-radio :label="1">下架</el-radio>
           </el-radio-group>
@@ -86,14 +94,14 @@
             <img
               style="width: 100px; height: 100px; border: 1px solid #e9e9e9"
               class="avatar"
-              v-if="good.goodsCoverImg"
-              :src="good.goodsCoverImg"
+              v-if="goods.goodsCoverImg"
+              :src="goods.goodsCoverImg"
             />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="详情内容">
+        <el-form-item label="详情内容" required>
           <div ref="editor"></div>
         </el-form-item>
 
@@ -112,36 +120,42 @@ import WangEditor from "wangeditor";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import type { FormItemRule } from "element-plus";
 import { ElForm } from "element-plus";
-import { addChangeGood, getCategory, getOneGood } from "@/untils/api";
-import { useRoute } from "vue-router";
-import type { AddGood, Glist } from "@/types/good/good";
+import { addChangeGood, getCategory } from "@/untils/api/addGoodApi";
+import { useRoute, useRouter } from "vue-router";
 import {
   uploadImgsServer,
   uploadImgServer,
   localGet,
   hasEmoji,
 } from "@/untils/common";
+import { useProductStore } from "@/stores/product/addGood";
 import type Editor from "wangeditor";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import type { Method } from "axios";
+import { storeToRefs } from "pinia";
+import type { AddGood } from "@/types/good/good";
+import type { CommonRes, FileCommonRes } from "@/types/common";
 
-const ruleForm = ref<InstanceType<typeof ElForm> | null>(null);
+const store = useProductStore();
 const route = useRoute();
-let defaultCate = ref("");
+const router = useRouter();
+
+const { goods } = storeToRefs(store);
+const ruleForm = ref<InstanceType<typeof ElForm> | null>(null);
+const id = route.query?.id;
 const loading = ref(false);
 const token = ref(localGet("token"));
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleBeforeUpload = (file: any) => {
+
+const handleBeforeUpload = (file: FileCommonRes) => {
   const sufix = file.name.split(".")[1] || "";
-  if (!["jpg", "jpeg", "png"].includes(sufix)) {
-    ElMessage.error("请上传 jpg、jpeg、png 格式的图片");
+  if (!["jpg", "jpeg", "JPG", "JPEG"].includes(sufix)) {
+    ElMessage.error("请上传 jpg、jpeg、JPEG 格式的图片");
     return false;
   }
 };
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleUrlSuccess = (val: any) => {
-  good.value.goodsCoverImg = val.data || "";
+const handleUrlSuccess = (val: CommonRes) => {
+  goods.value.goodsCoverImg = val.data || "";
 };
 let editor = ref("");
 let category = {
@@ -163,101 +177,63 @@ let category = {
   },
 };
 
-let good = ref<Glist>({
-  createTime: "",
-  createUser: 0,
-  goodsCarousel: "",
-  goodsCategoryId: 0,
-  goodsCoverImg: "",
-  goodsDetailContent: "",
-  goodsId: 0,
-  goodsIntro: "",
-  goodsName: "",
-  goodsSellStatus: 0,
-  originalPrice: 0,
-  sellingPrice: 0,
-  stockNum: 0,
-  tag: "",
-  updateTime: "",
-  updateUser: 0,
-});
-
 const rules = ref<Record<string, FormItemRule[]>>({
-  //因为数字设置最大最小值，不需要验证
   goodsName: [{ required: true, message: "商品名不能为空", trigger: "blur" }],
   goodsCoverImg: [{ required: true, message: "请上传主图", trigger: "blur" }],
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleChangeCate = (val: any) => {
-  console.log(val);
-  // good.value.categoryId.value = val[2] || 0; //获取三级分类的最后一个id
-  good.value.goodsCategoryId = val[2] || 0;
-};
-
 const submitAdd = () => {
   loading.value = false;
-  ruleForm.value?.validate((vaild) => {
-    console.log(typeof vaild, "这是vaild的类型");
+  ruleForm.value?.validate((vaild: boolean) => {
     if (vaild) {
       let httpOption: Method = "POST";
-      let params: AddGood = {
-        goodsCategoryId: good.value.goodsCategoryId,
-        goodsCoverImg: good.value.goodsCoverImg,
-        goodsDetailContent: instance.txt.html() as string,
-        goodsIntro: good.value.goodsIntro,
-        goodsName: good.value.goodsName,
-        goodsSellStatus: good.value.goodsSellStatus,
-        originalPrice: good.value.originalPrice,
-        sellingPrice: good.value.sellingPrice,
-        stockNum: good.value.stockNum,
-        tag: good.value.tag,
-      };
       if (
-        hasEmoji(params.goodsIntro) ||
-        hasEmoji(params.goodsName) ||
-        hasEmoji(params.tag) ||
-        hasEmoji(params.goodsDetailContent)
+        hasEmoji(goods.value.goodsIntro) ||
+        hasEmoji(goods.value.goodsName) ||
+        hasEmoji(goods.value.tag) ||
+        hasEmoji(goods.value.goodsDetailContent)
       ) {
         ElMessage.error("不要输入表情包，再输入就打死你个龟孙儿~");
         return;
       }
-      if (params.goodsName.length > 128) {
-        ElMessage.error("商品名称不能超过128个字符");
-        return;
-      }
-      if (params.goodsIntro.length > 200) {
-        ElMessage.error("商品简介不能超过200个字符");
-        return;
-      }
-      if (params.tag.length > 16) {
-        ElMessage.error("商品标签不能超过16个字符");
-        return;
-      }
-      console.log("params", params);
-      if (route.query?.id) {
-        params.goodsId = route.query.id as string;
+
+      let params: AddGood = {
+        goodsCategoryId: goods.value.goodsCategoryId,
+        goodsCoverImg: goods.value.goodsCoverImg,
+        goodsDetailContent: instance.txt.html() as string,
+        goodsIntro: goods.value.goodsIntro,
+        goodsName: goods.value.goodsName,
+        goodsSellStatus: goods.value.goodsSellStatus,
+        originalPrice: goods.value.originalPrice,
+        sellingPrice: goods.value.sellingPrice,
+        stockNum: goods.value.stockNum,
+        tag: goods.value.tag,
+      };
+      if (id) {
+        params.goodsId = id as string;
+        // 加入goodsid
         // 修改商品使用 put 方法
         httpOption = "PUT";
       }
       addChangeGood(params, httpOption).then((res) => {
         console.log(res);
-        ElMessage(route.query?.id ? "修改完成" : "添加成功");
+        ElMessage(id ? "修改完成" : "添加成功");
         loading.value = false;
+        router.push({
+          path: "/product/product_list",
+        });
       });
     }
   });
 };
 
-// 这页面的拉取
-const getOne = (id: number) => {
-  getOneGood(id).then((res) => {
-    console.log(res);
-    good.value = res.goods;
-    defaultCate.value = `${res.firstCategory.categoryName}/${res.secondCategory.categoryName}/${res.thirdCategory.categoryName}`;
-    // categoryId.value = res.goods.goodsCategoryId;
+const getOne = (id: string) => {
+  store.getterGood(id).then(() => {
+    console.log(22);
+    console.log("初始化数据");
   });
 };
+
 let instance: Editor;
 // 类型是new wangditor的构造函数找来的
 onMounted(() => {
@@ -268,18 +244,11 @@ onMounted(() => {
   instance.config.showLinkImgHref = false;
   instance.config.uploadImgMaxSize = 2 * 1024 * 1024; // 2M
   instance.config.uploadFileName = "file";
-  instance.config.uploadImgHeaders = {
-    // token: localStorage.getItem("token") | "",
-  };
-  // 图片返回格式不同，需要自定义返回格式
+  instance.config.uploadImgHeaders = {};
   instance.config.uploadImgHooks = {
-    // 图片上传并返回了结果，想要自己把图片插入到编辑器中
-    // 例如服务器端返回的不是 { errno: 0, data: [...] } 这种格式，可使用 customInsert
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     customInsert: function (insertImgFn: any, result) {
       console.log("result", result);
-      // result 即服务端返回的接口
-      // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
       if (result.data && result.data.length) {
         result.data.forEach((item) => insertImgFn(item));
       }
@@ -292,15 +261,20 @@ onMounted(() => {
     },
   });
   instance.create();
-
-  // 判断是来自productlist
-  if (route.query?.id) {
-    getOne(route.query?.id as unknown as number);
+  if (id) {
+    getOne(id as string);
   }
 });
+
 onBeforeUnmount(() => {
   instance.destroy();
 });
+
+const toProduct = () => {
+  router.push({
+    path: "/product/product_list",
+  });
+};
 </script>
 
 <style scoped>
@@ -323,5 +297,8 @@ onBeforeUnmount(() => {
   height: 100%;
   border: 1px solid #e9e9e9;
   padding: 32px 32px;
+}
+.el-btn {
+  margin-bottom: 20px;
 }
 </style>

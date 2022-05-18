@@ -4,10 +4,11 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import Layout from "../views/layout/index.vue";
-import productRouts from "./modules/product";
+import product from "./modules/product";
 import order from "./modules/order";
 import media from "./modules/media";
 import permissiom from "./modules/permission";
+import homePage from "./modules/hemoPage";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 
@@ -26,10 +27,11 @@ const routes: RouteRecordRaw[] = [
         name: "home",
         component: () => import("@/views/home/index.vue"),
       },
-      productRouts,
+      product,
       order,
       media,
       permissiom,
+      homePage,
     ],
   },
   {

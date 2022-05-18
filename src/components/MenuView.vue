@@ -26,19 +26,12 @@
           <el-icon><icon-menu /></el-icon>
           <span>商品列表</span></el-menu-item
         >
-        <el-menu-item index="/product/product_hot">
-          <el-icon><icon-menu /></el-icon>
-          <span>热门商品</span></el-menu-item
-        >
         <el-menu-item index="/product/product_add">
           <el-icon><icon-menu /></el-icon>
           <span>添加产品</span>
         </el-menu-item>
-        <el-menu-item index="/product/product_attr">
-          <el-icon><icon-menu /></el-icon> <span>attr</span></el-menu-item
-        >
-        <el-menu-item index="/product/product_reply">
-          <el-icon><icon-menu /></el-icon> <span>reply</span></el-menu-item
+        <el-menu-item index="/product/category">
+          <el-icon><icon-menu /></el-icon> <span>商品分类</span></el-menu-item
         >
       </el-sub-menu>
       <!-- 媒体 -->
@@ -55,6 +48,18 @@
         </template>
         <el-menu-item index="/order/order_list">list</el-menu-item>
         <el-menu-item index="/order/order_offline">offline</el-menu-item>
+      </el-sub-menu>
+
+      <!-- 首页配置 -->
+      <el-sub-menu index="/homePage">
+        <template #title>
+          <el-icon><icon-menu /></el-icon>
+          <span>首页配置</span>
+        </template>
+        <el-menu-item index="/homePage/swiper">swiper</el-menu-item>
+        <el-menu-item index="/homePage/newGoods">newGoods</el-menu-item>
+        <el-menu-item index="/homePage/hotList">hotList</el-menu-item>
+        <el-menu-item index="/homePage/recommend">recommend</el-menu-item>
       </el-sub-menu>
 
       <!-- 权限 -->
@@ -78,7 +83,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Location,
 } from "@element-plus/icons-vue";
-import { useOpenStore } from "@/stores/open";
+import { useOpenStore } from "@/stores/common/open";
 const useStroe = useOpenStore();
 </script>
 

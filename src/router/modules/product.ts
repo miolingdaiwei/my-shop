@@ -26,28 +26,36 @@ const routes: RouteRecordRaw = {
       },
     },
     {
-      path: "product_attr",
-      name: "product_attr",
-      component: () => import("@/views/product/attr/index.vue"),
+      path: "category",
+      name: "category",
       meta: {
-        title: "product_attr",
+        title: "category",
       },
-    },
-    {
-      path: "product_reply",
-      name: "product_reply",
-      component: () => import("@/views/product/reply/index.vue"),
-      meta: {
-        title: "product_reply",
-      },
-    },
-    {
-      path: "product_hot",
-      name: "product_hot",
-      component: () => import("@/views/product/hotList/index.vue"),
-      meta: {
-        title: "product_hot",
-      },
+      component: RouterView,
+      children: [
+        {
+          path: "",
+          component: import("@/views/product/category/index.vue"),
+        },
+        {
+          path: "level2",
+          name: "level2",
+          component: import("@/views/product/category/index.vue"),
+          meta: {
+            title: "level2",
+          },
+          children: [
+            {
+              path: "level3",
+              name: "level3",
+              component: import("@/views/product/category/index.vue"),
+              meta: {
+                title: "level3",
+              },
+            },
+          ],
+        },
+      ],
     },
   ],
 };

@@ -28,10 +28,10 @@
           个人
           <template #dropdown>
             <el-dropdown-menu>
-              <span class="drop-span">{{ username }}</span>
+              <span class="drop-span">{{ usernameStore.username }}</span>
               <el-dropdown-item>个人资料</el-dropdown-item>
               <el-dropdown-item>更改信息</el-dropdown-item>
-              <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-item @click="exitLogin">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -43,16 +43,20 @@
 <script lang="ts" setup>
 import { DArrowLeft, DArrowRight, Search } from "@element-plus/icons-vue";
 import { ArrowRight } from "@element-plus/icons-vue";
-import { useOpenStore } from "@/stores/open";
+import { useOpenStore } from "@/stores/common/open";
 import { useRouter } from "vue-router";
 import { computed, ref } from "@vue/reactivity";
+import { useUsernameStore } from "@/stores/common/common";
 
+const usernameStore = useUsernameStore();
 const input = ref("");
 const store = useOpenStore();
 const router = useRouter();
 
-const props = defineProps(["username"]);
-console.log(props.username);
+const exitLogin = () => {
+  usernameStore.exitUsername();
+  router.push("/login");
+};
 
 // 利用计算属性，将随时变化的route的meta字段的title放入面包屑
 const routes = computed(() => {
