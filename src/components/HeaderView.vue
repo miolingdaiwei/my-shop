@@ -28,7 +28,9 @@
           个人
           <template #dropdown>
             <el-dropdown-menu>
-              <span class="drop-span">{{ usernameStore.username }}</span>
+              <span class="drop-span">{{
+                usernameStore.username || "请重新登陆"
+              }}</span>
               <el-dropdown-item>个人资料</el-dropdown-item>
               <el-dropdown-item>更改信息</el-dropdown-item>
               <el-dropdown-item @click="exitLogin">退出登录</el-dropdown-item>
@@ -47,6 +49,7 @@ import { useOpenStore } from "@/stores/common/open";
 import { useRouter } from "vue-router";
 import { computed, ref } from "@vue/reactivity";
 import { useUsernameStore } from "@/stores/common/common";
+import { localRemove } from "@/untils/common";
 
 const usernameStore = useUsernameStore();
 const input = ref("");
@@ -56,6 +59,7 @@ const router = useRouter();
 const exitLogin = () => {
   usernameStore.exitUsername();
   router.push("/login");
+  localRemove("token");
 };
 
 // 利用计算属性，将随时变化的route的meta字段的title放入面包屑

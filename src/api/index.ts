@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import type { CommonRes } from "@/types/common";
-import { localGet } from "@/untils/common";
+import { localGet, localRemove } from "@/untils/common";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
 import { useUsernameStore } from "@/stores/common/common";
@@ -30,6 +30,7 @@ request.interceptors.response.use((res) => {
     if (res.data.message) ElMessage.error(res.data.message);
     if (res.data.resultCode == 419) {
       usernameStore.exitUsername();
+      localRemove("token");
       router.push({ path: "/login" });
     }
     return Promise.reject(res.data);
