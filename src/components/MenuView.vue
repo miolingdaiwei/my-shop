@@ -30,7 +30,7 @@
           <el-icon><icon-menu /></el-icon>
           <span>添加产品</span>
         </el-menu-item>
-        <el-menu-item index="/product/category">
+        <el-menu-item index="/product/level1">
           <el-icon><icon-menu /></el-icon> <span>商品分类</span></el-menu-item
         >
       </el-sub-menu>
@@ -56,7 +56,7 @@
           <el-icon><icon-menu /></el-icon>
           <span>首页配置</span>
         </template>
-        <el-menu-item index="/homePage/swiper">swiper</el-menu-item>
+        <el-menu-item index="/homePage/swiper">轮播图</el-menu-item>
         <el-menu-item index="/homePage/newGoods">newGoods</el-menu-item>
         <el-menu-item index="/homePage/hotList">hotList</el-menu-item>
         <el-menu-item index="/homePage/recommend">recommend</el-menu-item>

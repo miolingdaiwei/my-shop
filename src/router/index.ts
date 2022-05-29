@@ -11,6 +11,7 @@ import permissiom from "./modules/permission";
 import homePage from "./modules/hemoPage";
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
+import { localGet } from "@/untils/common";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -23,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/home/index.vue"),
       },
       {
-        path: "/home", //默认子路由
+        path: "/home",
         name: "home",
         component: () => import("@/views/home/index.vue"),
       },
@@ -51,10 +52,11 @@ const router = createRouter({
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
+  //只能防止第一次进来时没有token
   nprogress.start();
   if (to.path == "/login") next();
   else {
-    if (!localStorage.getItem("token"))
+    if (!localGet("token"))
       next({
         path: "/login",
       });

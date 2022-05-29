@@ -17,3 +17,24 @@ export const delSwipers = (ids: [number] | number[]) => {
     },
   });
 };
+export const getOneSwiper = (id: number) => {
+  return realRequest({
+    method: "GET",
+    url: `/carousels/${id}`,
+  });
+};
+
+export const changeSwiper = (data: object) => {
+  return realRequest({
+    method: "POST",
+    url: `/carousels`,
+    data,
+  });
+};
+export const addSwiper = (data: object) => {
+  return realRequest({
+    method: "PUT",
+    url: `/carousels`,
+    data,
+  });
+};

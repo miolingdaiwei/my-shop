@@ -12,6 +12,8 @@ export const localRemove = (key: string) => {
   window.localStorage.removeItem(key);
 };
 
+export const locagGetUser = (key: string) => window.localStorage.getItem(key);
+
 // 判断内容是否含有表情字符，现有数据库不支持。
 export const hasEmoji = (str = "") => {
   const reg =

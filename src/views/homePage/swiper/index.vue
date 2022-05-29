@@ -74,22 +74,30 @@
       :current-page="data.currPage"
       @current-change="changePage"
     />
+    <DialogAddSwiper
+      ref="addGood"
+      :reload="swiperStore.carousels"
+      :type="type"
+    />
   </el-card>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import DialogAddSwiper from "@/components/DialogSwiper.vue";
 import { useSwiperStore } from "@/stores/homePage/swiper";
 import { storeToRefs } from "pinia";
 import { delSwipers } from "@/untils/api/swiperApi";
 import { ElMessage } from "element-plus";
 import type { SwiperList } from "@/types/swiper";
+import { useDialogSwiperStore } from "@/stores/homePage/dialogSwiper";
 
+const diolagSwiperStore = useDialogSwiperStore();
 const swiperStore = useSwiperStore();
 const multipleTable = ref();
 const loading = ref(false);
 const multipleSelection = ref<SwiperList[]>([]);
-const { data } = storeToRefs(swiperStore);
+const { data, type } = storeToRefs(swiperStore);
 // 添加轮播项
 const handleAdd = () => {
   swiperStore.setType("add");
@@ -98,11 +106,12 @@ const handleAdd = () => {
 const handleEdit = (id: number) => {
   swiperStore.setType("edit");
   swiperStore.setId(id);
+  diolagSwiperStore.setId(id);
+  diolagSwiperStore.changeVisible();
 };
 // 选择项
 const handleSelectionChange = (val: SwiperList[]) => {
   console.log(val, "val");
-
   multipleSelection.value = val;
 };
 // 批量删除
@@ -124,6 +133,7 @@ const handleDeleteOne = (id: number) => {
     ElMessage("删除成功");
     loading.value = false;
   });
+  loading.value = false;
 };
 const changePage = (val: number) => {
   swiperStore.setPage(val);

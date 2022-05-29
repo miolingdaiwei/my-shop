@@ -1,13 +1,8 @@
 import axios, { type AxiosRequestConfig } from "axios";
 import type { CommonRes } from "@/types/common";
-import { localGet, localRemove } from "@/untils/common";
+import { localGet } from "@/untils/common";
 import { ElMessage } from "element-plus";
-import { useRouter } from "vue-router";
-import { useUsernameStore } from "@/stores/common/common";
-
-const usernameStore = useUsernameStore();
-
-const router = useRouter();
+import router from "@/router/index";
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL + "",
@@ -27,14 +22,16 @@ request.interceptors.response.use((res) => {
     return Promise.reject(res);
   }
   if (res.data.resultCode != 200) {
-    if (res.data.message) ElMessage.error(res.data.message);
-    if (res.data.resultCode == 419) {
-      usernameStore.exitUsername();
-      localRemove("token");
+    if (res.data.message) {
+      ElMessage.error(res.data.message);
+    }
+    if (res.data.resultCode === 419) {
+      ElMessage("管理员登录过期");
       router.push({ path: "/login" });
     }
     return Promise.reject(res.data);
   }
+  console.log(22);
   return res.data as CommonRes;
 });
 

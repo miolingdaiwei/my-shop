@@ -26,21 +26,17 @@ const routes: RouteRecordRaw = {
       },
     },
     {
-      path: "category",
-      name: "category",
+      path: "level1",
+      name: "level1",
       meta: {
-        title: "category",
+        title: "level1",
       },
-      component: RouterView,
+      component: () => import("@/views/product/category/index.vue"),
       children: [
-        {
-          path: "",
-          component: import("@/views/product/category/index.vue"),
-        },
         {
           path: "level2",
           name: "level2",
-          component: import("@/views/product/category/index.vue"),
+          component: () => import("@/views/product/category/index.vue"),
           meta: {
             title: "level2",
           },
@@ -48,7 +44,7 @@ const routes: RouteRecordRaw = {
             {
               path: "level3",
               name: "level3",
-              component: import("@/views/product/category/index.vue"),
+              component: () => import("@/views/product/category/index.vue"),
               meta: {
                 title: "level3",
               },

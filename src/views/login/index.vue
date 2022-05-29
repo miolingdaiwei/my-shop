@@ -56,7 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import router from "@/router/index";
 import { useUsernameStore } from "@/stores/common/common";
 import { ref, reactive } from "vue";
 import type { FormItemRule } from "element-plus";
@@ -107,9 +106,8 @@ const submitForm = () => {
           store.setUsername(ruleFrom.username);
         }
         loading.value = false;
-        router.push({
-          path: "/",
-        });
+        window.location.href = "/";
+        // 为了刷新页面，也就是刷新一下token
       });
     }
   });
