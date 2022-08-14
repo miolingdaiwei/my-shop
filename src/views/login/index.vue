@@ -46,9 +46,6 @@
             :loading="loading"
             >立即登录</el-button
           >
-          <el-checkbox v-model="checked" @change="!checked"
-            >下次自动登录</el-checkbox
-          >
         </el-form-item>
       </el-form>
     </div>
@@ -71,8 +68,6 @@ const loginForm = ref<InstanceType<typeof ElForm> | null>(null);
 // 自动获取
 
 const loading = ref(false);
-
-let checked = ref<boolean>(false);
 
 const rules = ref<Record<string, FormItemRule[]>>({
   username: [{ required: true, message: "账户不能为空", trigger: "blur" }],
@@ -101,10 +96,8 @@ const submitForm = () => {
         passwordMd5: Md5.hashStr(ruleFrom.password),
         // 这是ts-md5的文档写法
       }).then((res) => {
-        if (checked.value) {
-          localSet("token", res);
-          store.setUsername(ruleFrom.username);
-        }
+        localSet("token", res);
+        store.setUsername(ruleFrom.username);
         loading.value = false;
         window.location.href = "/";
         // 为了刷新页面，也就是刷新一下token

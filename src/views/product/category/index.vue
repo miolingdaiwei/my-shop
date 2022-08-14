@@ -169,14 +169,18 @@ const handleNext = (item: categoryList) => {
 };
 
 const getMyCategory = () => {
-  category(myCategory.value).then((res: categoryRes) => {
-    state.tableData = res.list;
-    state.total = res.totalCount;
-    state.currentPage = res.currPage;
-    state.loading = false;
-    state.level = level as number;
-    state.parent_id = parent_id as number;
-  });
+  state.loading = true;
+  category(myCategory.value)
+    .then((res: categoryRes) => {
+      state.tableData = res.list;
+      state.total = res.totalCount;
+      state.currentPage = res.currPage;
+      state.level = level as number;
+      state.parent_id = parent_id as number;
+    })
+    .then(() => {
+      state.loading = false;
+    });
 };
 
 onMounted(() => {

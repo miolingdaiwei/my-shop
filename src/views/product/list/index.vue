@@ -70,7 +70,6 @@ import { changeStatus } from "@/untils/api/productApi";
 
 const store = useProductStore();
 const router = useRouter();
-
 let loading = ref(false);
 
 const getGood = () => {
@@ -103,7 +102,7 @@ const handleStatus = (status: number, id?: number) => {
 };
 
 onMounted(() => {
-  store.getterGood();
+  getGood();
 });
 </script>
 
