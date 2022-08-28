@@ -47,7 +47,7 @@ const router = createRouter({
   routes,
 });
 
-// 全局前置守卫
+// 全局前置守卫;
 router.beforeEach((to, from, next) => {
   //只能防止第一次进来时没有token
   nprogress.start();
@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
     }
   }
 });
-// 全局后置守卫
+// 全局后置守卫;
 router.afterEach(() => nprogress.done());
-
 export default router;

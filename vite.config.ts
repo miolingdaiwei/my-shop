@@ -30,6 +30,17 @@ export default defineConfig({
         // 确认换源  api换成“”
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
+      "/echart": {
+        target: "https://echarts.apache.org/examples",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/echart/, ""),
+      },
+      // ttp://localhost:3000/echart
+      // "http://localhost:3000/echart": {
+      //   target: "https://echarts.apache.org/examples",
+      //   changeOrigin: true,
+      //   rewrite: (path) => path.replace(/^\/api/, ""),
+      // },
     },
     host: "0.0.0.0",
   },

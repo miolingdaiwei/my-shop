@@ -1,5 +1,5 @@
 <template>
-  <h1>这是media</h1>
+  <div id="earthDemo"></div>
 </template>
 
 <script setup lang="ts"></script>

@@ -9,12 +9,12 @@
           <d-arrow-right />
         </el-icon>
       </el-button>
-      <el-breadcrumb :separator-icon="ArrowRight">
+      <!-- <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item v-for="item in routes" :key="item.path">{{
           item.meta.title
         }}</el-breadcrumb-item>
-      </el-breadcrumb>
+      </el-breadcrumb> -->
     </div>
     <div class="menuDiv-right">
       <el-space size="default">
@@ -44,29 +44,26 @@
 
 <script lang="ts" setup>
 import { DArrowLeft, DArrowRight, Search } from "@element-plus/icons-vue";
-import { ArrowRight } from "@element-plus/icons-vue";
+// import { ArrowRight } from "@element-plus/icons-vue";
 import { useOpenStore } from "@/stores/common/open";
 import { useRouter } from "vue-router";
-import { computed, ref } from "@vue/reactivity";
+import { ref } from "@vue/reactivity";
 import { useUsernameStore } from "@/stores/common/common";
 import { localRemove } from "@/untils/common";
-
 const usernameStore = useUsernameStore();
 const input = ref("");
 const store = useOpenStore();
-const router = useRouter();
-
+let router = useRouter();
 const exitLogin = () => {
   usernameStore.exitUsername();
   router.push("/login");
   localRemove("token");
 };
-
-// 利用计算属性，将随时变化的route的meta字段的title放入面包屑
-const routes = computed(() => {
-  return router.currentRoute.value.matched.filter((item) => item.meta.title);
-});
-
+// const routes = computed(() => {
+//   const a = router.currentRoute.value;
+//   console.log(router.currentRoute.value.matched, 111);
+//   return a.matched.filter((item) => item.meta.title);
+// });
 const openMenu = () => {
   store.changeOpenMenu();
 };

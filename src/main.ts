@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-import { createPinia } from "pinia";
+// import { createPinia } from "pinia";
 import elementPlus from "./plugins/element-plus";
 import "./styles/index.scss";
 import App from "./App.vue";
@@ -10,7 +10,7 @@ import "./mock/index";
 
 const app = createApp(App);
 
-app.use(createPinia());
+// app.use(createPinia());
 app.use(router);
 app.use(elementPlus);
 app.use(pinia);
