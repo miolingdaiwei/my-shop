@@ -1,52 +1,71 @@
 <template>
-  <el-card>
+  <el-card class="main">
     <div id="earthDemo" class="earth"></div>
   </el-card>
 </template>
 
 <script setup lang="ts">
-import * as echarts from "echarts";
-import "echarts-gl";
-import { onMounted, onUnmounted } from "vue";
+import * as Three from "three";
+import { MeshBasicMaterial } from "three";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let earth: any = null;
-onMounted(() => {
-  earth = echarts.init(document.getElementById("earthDemo") as HTMLElement);
+const earthDom = document.getElementById("earthDemo");
+const earthWidth = earthDom?.offsetWidth as number;
+const earthHeight = earthDom?.offsetHeight as number;
 
-  const ROOT_PATH = "/echart";
+const scene = new Three.Scene();
 
-  const option = {
-    backgroundColor: "#000",
-    globe: {
-      baseTexture: ROOT_PATH + "/data-gl/asset/earth.jpg",
-      shading: "lambert",
-      environment: ROOT_PATH + "/data-gl/asset/starfield.jpg",
-      atmosphere: {
-        show: true,
-      },
-      light: {
-        ambient: {
-          intensity: 0.1,
-        },
-        main: {
-          intensity: 1.5,
-        },
-      },
-    },
-    series: [],
-  };
+const camera = new Three.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  1,
+  2000
+);
+camera.position.set(-50, -50, 130);
+camera.aspect = earthWidth / earthHeight;
+camera.updateProjectionMatrix();
+scene.add(camera);
 
-  earth.setOption(option);
+const planeGeometry = new Three.PlaneGeometry(100, 100);
+const planeMaterial = new MeshBasicMaterial({
+  color: 0xccffff,
+});
+const plane = new Three.Mesh(planeGeometry, planeMaterial);
+scene.add(plane);
+
+// antialias 抗锯齿
+const renderer = new Three.WebGLRenderer({
+  antialias: true,
+});
+renderer.outputEncoding = Three.sRGBEncoding;
+renderer.setSize(earthWidth, earthHeight);
+
+window.addEventListener("resize", () => {
+  camera.aspect = earthWidth / earthHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(earthWidth, earthHeight);
 });
 
-onUnmounted(() => {
-  earth.dispose();
-});
+earthDom?.appendChild(renderer.domElement);
+
+// const controls = new OrbitControls(camera, renderer.domElement);
+// scene.add(controls);
+
+function render() {
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
+render();
 </script>
 
 <style lang="scss" scoped>
+.main {
+  width: 100%;
+  height: 100%;
+}
 #earthDemo {
-  min-height: 500px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 </style>
