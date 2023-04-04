@@ -72,7 +72,7 @@ const loading = ref(false);
 const rules = ref<Record<string, FormItemRule[]>>({
   username: [{ required: true, message: "账户不能为空", trigger: "blur" }],
   password: [{ required: true, message: "密码不能为空", trigger: "blur" }],
-  checkCode: [{ required: true, message: "验证码不能为控", trigger: "blur" }],
+  checkCode: [{ required: true, message: "验证码不能为空", trigger: "blur" }],
 });
 
 type rulefrom = {
@@ -82,8 +82,8 @@ type rulefrom = {
 };
 
 let ruleFrom = reactive<rulefrom>({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "123456",
   checkCode: "",
 });
 

@@ -90,6 +90,7 @@ const useStroe = useOpenStore();
 <style lang="scss" scoped>
 .el-menu {
   border-right: none;
+  height: 100%;
 }
 .el-menu:not(.el-menu--collapse) {
   width: 200px;

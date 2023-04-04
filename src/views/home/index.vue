@@ -27,12 +27,21 @@
       </el-card>
     </div>
     <div id="zoom"></div>
+    <!-- <div>
+      <h2>{{ a }}</h2>
+    </div> -->
+    <!-- <button onclick="tod()">click me</button> -->
   </el-card>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, computed } from "vue";
 import * as echarts from "echarts";
+import { reactive } from "@vue/reactivity";
+const person = reactive({ name: "syh" });
+computed(() => {
+  return person.name;
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let myChart: any = null;
@@ -167,6 +176,6 @@ onUnmounted(() => {
   margin-right: 0;
 }
 #zoom {
-  min-height: 300px;
+  height: 800px;
 }
 </style>
